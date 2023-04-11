@@ -44,7 +44,7 @@ function App() {
 
   const Details = ({value}) => {
     return(
-      <p className='font-medium text-lg pl-4'>
+      <p className='font-medium text-lg'>
         {value}
       </p>
     )
@@ -76,8 +76,37 @@ function App() {
     setIsLoading(true)
     try {
 
-      const response = await fetch(url); // Replace with your API endpoint
-      const jsonData = await response.json();
+    const testData =  {
+        "ip": "8.8.8.8",
+        "location": {
+            "country": "US",
+            "region": "California",
+            "city": "Mountain View",
+            "lat": 37.40599,
+            "lng": -122.078514,
+            "postalCode": "94043",
+            "timezone": "-07:00",
+            "geonameId": 5375481
+        },
+        "domains": [
+            "0d2.net",
+            "003725.com",
+            "0f6.b0094c.cn",
+            "007515.com",
+            "0guhi.jocose.cn"
+        ],
+        "as": {
+            "asn": 15169,
+            "name": "Google LLC",
+            "route": "8.8.8.0/24",
+            "domain": "https://about.google/intl/en/",
+            "type": "Content"
+        },
+        "isp": "Google LLC"
+    }
+
+      // const response = await fetch(url); // Replace with your API endpoint
+      const jsonData = testData //await response.json();
 
       setIpAddress(jsonData.ip)
       setLocation(jsonData.location.city)
@@ -109,11 +138,11 @@ function App() {
     fetchData(`https://geo.ipify.org/api/v2/country,city?apiKey=${API_KEY}`);
   }, []);
 
-  const mapRef = useRef(null)
+  // const mapRef = useRef(null)
 
-  useEffect(() => {
-    setMapCenter([coordinatesLat, coordinatesLang])
-  }, [coordinatesLat, coordinatesLang])
+  // useEffect(() => {
+  //   setMapCenter([coordinatesLat, coordinatesLang])
+  // }, [coordinatesLat, coordinatesLang])
 
   const customMarkerIcon = new L.Icon({
     iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png',
@@ -126,20 +155,20 @@ function App() {
 
   return (
     <div className="App">
-      <div className=" relative">
-        <div className='absolute z-[999] w-full left-1/2 -translate-x-1/2 text-center p-4 flex flex-col justify-center align-center gap-4'>
-          <h1 className='font-medium text-white'>
+      <div className=" relative bg-black h-[300px] lg:h-[280px] bg-pattern-bg-mobile lg:bg-pattern-bg-desktop  bg-cover bg-center">
+        <div className='absolute z-[999] w-full max-w-[480px] lg:max-w-full left-1/2 -translate-x-1/2 text-center px-4 py-8 flex flex-col justify-center align-center gap-8 lg:gap-14'>
+          <h1 className='font-medium text-xl lg:text-2xl text-white'>
             IP Address Tracker
           </h1>
           <form action="#">
-          <div className="flex items-center rounded-lg overflow-hidden">
+          <div className="flex items-center rounded-lg overflow-hidden lg:w-[500px] m-auto">
             <input type="text" id='text-input' className="flex-1 px-4 py-2 text-[16px] lg:text-[18px]" placeholder="Search for any IP address or domain" />
             <button onClick={trackIp} className="px-4 py-2 bg-very-dark-gray text-white" type="button">
               <FontAwesomeIcon icon={faChevronRight} />
             </button>
           </div>
           </form>
-          <div className='flex flex-col lg:flex-row lg:divide-x justify-center items-center gap-4 p-4 bg-white rounded-lg text-center'>
+          <div className='flex flex-col lg:flex-row lg:divide-x justify-center lg:justify-between items-center gap-4 p-4 lg:p-8 bg-white rounded-lg text-center lg:text-left w-full lg:max-w-[700px] m-auto'>
             <div>
               <Label title="IP ADDRESS"/>
               {isLoading ? (<FontAwesomeIcon icon={faSpinner} className='animate-spin' />) :( <Details value={ipAddress} />)}
@@ -158,12 +187,12 @@ function App() {
             </div>
           </div>
         </div>
-        <picture className='w-screen'>
+        {/*<picture className='w-screen'>
           <source srcSet={bgPatternDesktop} media="(min-width: 375px)"/>
           <img src={bgPatternMobile} alt="background pattern" />
-        </picture>
+        </picture>*/}
       </div>
-      <MapContainer center={mapCenter} zoom={13} zoomControl={false} scrollWheelZoom={false} className='min-h-[500px] h-full overflow-hidden'>
+      <MapContainer center={mapCenter} zoom={13} zoomControl={false} scrollWheelZoom={false} className='h-[400px] lg:h-[250px] overflow-hidden'>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -172,7 +201,7 @@ function App() {
         <Marker position={mapCenter} icon={customMarkerIcon}>
         </Marker>
       </MapContainer>
-    </div>
+     </div>
   )
 }
 
