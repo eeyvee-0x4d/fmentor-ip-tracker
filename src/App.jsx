@@ -47,7 +47,7 @@ function App() {
     )
   }
 
-  const API_KEY = at_3wwRDzPRrE6LNmmeVrb2Z2CPde3Lv
+  const API_KEY = 'at_3wwRDzPRrE6LNmmeVrb2Z2CPde3Lv'
   
   const trackIp = (e) => {
     e.preventDefault()
