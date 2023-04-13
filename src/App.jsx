@@ -72,7 +72,6 @@ function App() {
         return res.json()
       })
       .then(res => {
-        console.log(res)
         setIpAddress(res.ip)
         setLocation(`${res.location.city} ${res.location.country}`)
         setTimeZone(`UTC ${res.location.timezone}`)
@@ -100,7 +99,6 @@ function App() {
           return res.json()
         })
         .then(res => {
-          console.log(res)
           setIpAddress(res.ip)
           setLocation(`${res.location.city} ${res.location.country}`)
           setTimeZone(`UTC ${res.location.timezone}`)
