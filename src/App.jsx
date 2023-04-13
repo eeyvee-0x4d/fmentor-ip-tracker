@@ -19,16 +19,13 @@ import 'leaflet/dist/leaflet.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight, faSpinner } from '@fortawesome/free-solid-svg-icons'
 
-import bgPatternDesktop from '../images/pattern-bg-desktop.png'
-import bgPatternMobile from '../images/pattern-bg-mobile.png'
-
 import './App.css'
 
 function App() {
   const [ipAddress, setIpAddress] = useState('')
   const [location, setLocation] = useState('')
   const [coordinatesLat, setCoordinatesLat] = useState('')
-  const [coordinatesLang, setCoordinatesLang] = useState('')
+  const [coordinatesLng, setCoordinatesLng] = useState('')
   const [mapCenter, setMapCenter] = useState([0, 0])
   const [timeZone, setTimeZone] = useState('')
   const [isp, setIsp] = useState('')
@@ -50,7 +47,7 @@ function App() {
     )
   }
 
-  const API_KEY = import.meta.env.VITE_API_KEY;
+  const API_KEY = at_3wwRDzPRrE6LNmmeVrb2Z2CPde3Lv
   
   const trackIp = (e) => {
     e.preventDefault()
@@ -69,80 +66,62 @@ function App() {
       requestUrl = requestUrl = `https://geo.ipify.org/api/v2/country,city?apiKey=${API_KEY}&domain=${inputValue}`
     }
 
-    fetchData(requestUrl)
-  }
-
-  const fetchData = async (url) => {
-    setIsLoading(true)
-    try {
-
-    const testData =  {
-        "ip": "8.8.8.8",
-        "location": {
-            "country": "US",
-            "region": "California",
-            "city": "Mountain View",
-            "lat": 37.40599,
-            "lng": -122.078514,
-            "postalCode": "94043",
-            "timezone": "-07:00",
-            "geonameId": 5375481
-        },
-        "domains": [
-            "0d2.net",
-            "003725.com",
-            "0f6.b0094c.cn",
-            "007515.com",
-            "0guhi.jocose.cn"
-        ],
-        "as": {
-            "asn": 15169,
-            "name": "Google LLC",
-            "route": "8.8.8.0/24",
-            "domain": "https://about.google/intl/en/",
-            "type": "Content"
-        },
-        "isp": "Google LLC"
-    }
-
-      // const response = await fetch(url); // Replace with your API endpoint
-      const jsonData = testData //await response.json();
-
-      setIpAddress(jsonData.ip)
-      setLocation(jsonData.location.city)
-      setTimeZone(`UTC ${jsonData.location.timezone}`)
-      setIsp(jsonData.isp)
-      setCoordinatesLat(jsonData.location.lat)
-      setCoordinatesLang(jsonData.location.lng)
-
-      // const map = useMap()
-      // map.setView([jsonData.location.lat, jsonData.location.lng], 15)
-
-    } catch (error) {
-      setIpAddress('Error')
-      setLocation('Error')
-      setTimeZone(`Error`)
-      setIsp('Error')
-
-      alert('ERROR: Make sure input is in correct format.')
-    }
-    
-    setIsLoading(false)
+    fetch(requestUrl)
+      .then(res => {
+        setIsLoading(true)
+        return res.json()
+      })
+      .then(res => {
+        setIpAddress(res.ip)
+        setLocation(`${res.location.city} ${res.location.country}`)
+        setTimeZone(`UTC ${res.location.timezone}`)
+        setIsp(res.isp)
+        setCoordinatesLat(res.location.lat)
+        setCoordinatesLng(res.location.lng)
+        setIsLoading(false)
+      })
+      .catch(error => {
+        setIpAddress('Error')
+        setLocation('Error')
+        setTimeZone(`Error`)
+        setIsp('Error')
+        setIsLoading(false)
+      })
   };
 
-  // useEffect(() => {
-  //   fetchData(`https://geo.ipify.org/api/v2/country,city?apiKey=${API_KEY}`);
-  // // }, [ipAddress, location, timeZone, isp]);
-
   useEffect(() => {
-    fetchData(`https://geo.ipify.org/api/v2/country,city?apiKey=${API_KEY}`);
+    setIsLoading(true)
+    const fetchData = () => {
+      
+      fetch(`https://geo.ipify.org/api/v2/country,city?apiKey=${API_KEY}`)
+        .then(res => {
+          setIsLoading(true)
+          return res.json()
+        })
+        .then(res => {
+          setIpAddress(res.ip)
+          setLocation(`${res.location.city} ${res.location.country}`)
+          setTimeZone(`UTC ${res.location.timezone}`)
+          setIsp(res.isp)
+          setCoordinatesLat(res.location.lat)
+          setCoordinatesLng(res.location.lng)
+          setIsLoading(false)
+        })
+        .catch(error => {
+          setIpAddress('Error')
+          setLocation('Error')
+          setTimeZone(`Error`)
+          setIsp('Error')
+          setIsLoading(false)
+        })
+    };
+
+    fetchData()  
   }, []);
 
-  // const mapRef = useRef(null)
-
-  // useEffect(() => {
-  //   setMapCenter([coordinatesLat, coordinatesLang])
-  // }, [coordinatesLat, coordinatesLang])
+  useEffect(() => {
+    setMapCenter([coordinatesLat, coordinatesLng])
+  }, [coordinatesLat, coordinatesLng])
 
   const customMarkerIcon = new L.Icon({
     iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png',
@@ -155,7 +134,7 @@ function App() {
 
   return (
     <div className="App">
-      <div className=" relative bg-black h-[300px] lg:h-[280px] bg-pattern-bg-mobile lg:bg-pattern-bg-desktop  bg-cover bg-center">
+      <div className=" relative h-[300px] lg:h-[280px] bg-pattern-bg-mobile lg:bg-pattern-bg-desktop  bg-cover bg-center">
         <div className='absolute z-[999] w-full max-w-[480px] lg:max-w-full left-1/2 -translate-x-1/2 text-center px-4 py-8 flex flex-col justify-center align-center gap-8 lg:gap-14'>
           <h1 className='font-medium text-xl lg:text-2xl text-white'>
             IP Address Tracker
@@ -187,10 +166,6 @@ function App() {
             </div>
           </div>
         </div>
-        {/*<picture className='w-screen'>
-          <source srcSet={bgPatternDesktop} media="(min-width: 375px)"/>
-          <img src={bgPatternMobile} alt="background pattern" />
-        </picture>*/}
       </div>
       <MapContainer center={mapCenter} zoom={13} zoomControl={false} scrollWheelZoom={false} className='h-[400px] lg:h-[250px] overflow-hidden'>
         <TileLayer
