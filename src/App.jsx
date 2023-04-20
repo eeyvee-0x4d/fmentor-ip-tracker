@@ -23,7 +23,7 @@ function App() {
 
   const Label = ({title}) => {
     return(
-      <h2 className='text-dark-gray text-xs'>
+      <h2 className='text-dark-gray text-sm'>
         {title}
       </h2>
     )
@@ -31,7 +31,7 @@ function App() {
 
   const Details = ({value}) => {
     return(
-      <p className='font-medium text-lg'>
+      <p className='font-medium text-xl'>
         {value}
       </p>
     )
@@ -128,7 +128,7 @@ function App() {
             </button>
           </div>
           </form>
-          <div className='flex flex-col lg:flex-row lg:divide-x justify-center lg:justify-between items-center gap-4 p-4 lg:p-8 bg-white rounded-lg text-center lg:text-left w-full lg:max-w-[700px] m-auto'>
+          <div className='flex flex-col lg:flex-row lg:divide-x justify-center lg:justify-between items-center lg:items-start gap-4 p-4 lg:p-8 bg-white rounded-lg text-center lg:text-left w-full lg:max-w-[700px] m-auto'>
             <div>
               <Label title="IP ADDRESS"/>
               {isLoading ? (<FontAwesomeIcon icon={faSpinner} className='animate-spin' />) :( <Details value={ipAddress} />)}
