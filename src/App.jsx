@@ -4,22 +4,12 @@ import {
   useRef
 } from 'react'
 
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  ZoomControl,
-  useMap
-} from 'react-leaflet'
-
-import L from 'leaflet'
-
-import 'leaflet/dist/leaflet.css';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight, faSpinner } from '@fortawesome/free-solid-svg-icons'
 
 import './App.css'
+
+import Map from '../src/components/Map'
 
 function App() {
   const [ipAddress, setIpAddress] = useState('')
@@ -47,7 +37,7 @@ function App() {
     )
   }
 
-  const API_KEY = 'at_3wwRDzPRrE6LNmmeVrb2Z2CPde3Lv'
+  const API_KEY = import.meta.env.VITE_API_KEY
   
   const trackIp = (e) => {
     e.preventDefault()
@@ -123,17 +113,8 @@ function App() {
     setMapCenter([coordinatesLat, coordinatesLng])
   }, [coordinatesLat, coordinatesLng])
 
-  const customMarkerIcon = new L.Icon({
-    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
-
   return (
-    <div className="App">
+    <div className="App flex flex-col h-screen">
       <div className=" relative h-[300px] lg:h-[280px] bg-pattern-bg-mobile lg:bg-pattern-bg-desktop  bg-cover bg-center">
         <div className='absolute z-[999] w-full max-w-[480px] lg:max-w-full left-1/2 -translate-x-1/2 text-center px-4 py-8 flex flex-col justify-center align-center gap-8 lg:gap-14'>
           <h1 className='font-medium text-xl lg:text-2xl text-white'>
@@ -167,15 +148,7 @@ function App() {
           </div>
         </div>
       </div>
-      <MapContainer center={mapCenter} zoom={13} zoomControl={false} scrollWheelZoom={false} className='h-[400px] lg:h-[250px] overflow-hidden'>
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <ZoomControl position="bottomleft" />
-        <Marker position={mapCenter} icon={customMarkerIcon}>
-        </Marker>
-      </MapContainer>
+      <Map mapCenter={mapCenter} />
      </div>
   )
 }
